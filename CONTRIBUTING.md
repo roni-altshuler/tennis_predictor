@@ -6,4 +6,4 @@ Useful reports describe the expected behavior, the actual behavior, Python versi
 
 Changes to chronology or metrics should include tests for counterfactual future outcomes, date boundaries and malformed records. Parameter changes need a predeclared evaluation plan; do not tune on held-out outcomes and present them as fresh evidence. Keep ATP and WTA coverage claims separate and identify missing competition tiers.
 
-Run the development commands in the README before proposing a change. Explain what was tested and what remains unverified. There is no user interface or deployed service in the current scope.
+Run the development commands in the README before proposing a change. Explain what was tested and what remains unverified. Browser changes need production-build checks at mobile, tablet and desktop widths, keyboard/accessibility coverage and repeated/interrupted interaction checks. Keep synthetic demonstrations visibly separate from real-data claims, and do not add analytics, uploads, accounts or new providers without an explicit privacy/data-rights review.

@@ -1,13 +1,17 @@
 # Tennis Predictor
 
-An experimental Python foundation for transparent tennis modeling: normalized singles results, separate ATP/WTA rating pools, surface-aware Elo and conservative retrospective evaluation.
+A transparent tennis exploration prototype: a responsive browser workbench, an explicit competition-coverage directory, and an offline Python foundation for surface-aware Elo and conservative retrospective evaluation.
 
-**Status: early research prototype.** The included command runs an original synthetic example. This repository does not include real match data, a trained model, published benchmark results, a web application or a live prediction service. No live or prospective accuracy is claimed.
+**Status: early prototype — synthetic demonstrations only.** The browser app and command-line example use original fictional inputs. There is no live fixture feed, real-player forecast, trained real-data model or public benchmark. No live or prospective accuracy is claimed.
+
+**Website:** a production URL has not yet been verified. Run the complete browser app locally with the commands below. A build or CI badge alone is not evidence that a deployed website works.
 
 ## What is included
 
 | Capability | Current scope |
 | --- | --- |
+| Browser workbench | Interactive ATP/WTA synthetic matchup lab, three surfaces, editable overall ratings, global/blended Elo, inspectable inputs, cancellation and error recovery |
+| Competition directory | Searchable tour, Grand Slam, development and other-format categories; unavailable data shown explicitly |
 | Result normalization | A local CSV adapter with explicit identity, score, surface, round and competition filters |
 | Baseline models | Global Elo and a fixed 50/50 global–surface rating blend, with separate ATP/WTA pools |
 | Retrospective evaluation | Frozen yearly cohorts with an intervening tournament-start year withheld |
@@ -17,7 +21,42 @@ An experimental Python foundation for transparent tennis modeling: normalized si
 
 These are software capabilities, not evidence that any real competition is fully covered. Four Grand Slam names are recognized by the adapter; no Grand Slam dataset is bundled or validated by the public test suite. Challenger, ITF, qualifying, doubles, mixed doubles, wheelchair, junior, collegiate, team and alternative-format competitions are outside the included evaluation contract.
 
-## Quick start
+## Browser app
+
+Use **Node.js 24.19.0** and npm. From the repository root:
+
+```sh
+npm ci --ignore-scripts
+npm run dev
+```
+
+Open the printed local URL (normally `http://127.0.0.1:5173`). The app has four destinations: court overview, matchup lab, competitions, and method/record. Try the same demo matchup on Hard and Clay, switch between global Elo and the experimental surface blend, then inspect the input table. All ratings are authored synthetic values, not real athletes or fitted model estimates. Changing inputs clears previous output; reset/cancel/navigation stop pending calculations.
+
+The competition directory includes ATP/WTA tours, each Grand Slam, Challenger, WTA 125, ITF, qualifying, doubles/mixed doubles, team events, Olympics/multi-sport events, juniors, wheelchair, collegiate/domestic and other competitions. These are navigation categories, not an exhaustive tournament list or a claim that those competitions are modeled. **Every category currently has unavailable data.** No unknown schedule is represented as zero games.
+
+The static app needs no account, API key, backend or paid service. Calculations run in a local Web Worker. Inputs remain in memory only; no uploads, local storage, analytics or tennis-provider calls are implemented. The hosting service may keep normal request logs. The footer exposes a deterministic source fingerprint for deployed-version checks.
+
+For a production build and browser checks:
+
+```sh
+npm run lint
+npm run typecheck
+npm test
+npm run build
+npm run preview
+```
+
+The preview serves `http://127.0.0.1:4173`. Stop it before the browser test runner starts its own production preview:
+
+```sh
+# If the Playwright-managed Chromium is not already installed:
+npx playwright install --with-deps chromium
+npm run test:browser
+```
+
+An already installed compatible Chromium can be selected with `PLAYWRIGHT_EXECUTABLE_PATH=/absolute/path/to/chromium npm run test:browser`. This does not establish equivalence to the pinned CI browser. CI uses Ubuntu 24.04, Node 24.19.0 and the Chromium supplied by Playwright 1.65.0. Browser tests exercise 360, 768 and 1440 CSS-pixel layouts, keyboard navigation, axe accessibility rules, real local calculations, validation, repeat/reset/cancel/navigation flows, empty filters and a simulated worker failure. Automated accessibility checks do not replace assistive-technology testing.
+
+## Python quick start
 
 Use **Python 3.12**. From the repository root:
 
@@ -67,17 +106,22 @@ The [data policy](docs/data-policy.md) describes the reviewed source family and 
 ## Project layout
 
 ```text
+index.html / web/        Static browser app, original fixtures and local worker
+web-tests/              Browser-domain regression tests
+browser-tests/          Production-build responsive and accessibility checks
+vite.config.ts          Static build and deterministic source fingerprint
+package*.json           Pinned web development dependencies
 tennis_predictor.py        Offline library and synthetic command-line example
 tests/test_predictor.py   Dataset-independent regression tests
 docs/architecture.md     Included components and integration boundaries
 docs/evaluation.md       Chronology, metrics and evidence limits
 docs/data-policy.md      External-data rights and retrieval requirements
 requirements-dev.txt     Pinned development tools
-.github/workflows/ci.yml Automated Python checks
+.github/workflows/ci.yml Automated Python and full web checks
 ```
 
 ## Development priorities
 
-The next stages are a verified data-rights contract for the intended use, result-availability timestamps, reproducible dataset-specific evaluation and calibration. A product UI, upcoming fixtures, competition expansion and deployment require separate implementation and validation. No delivery date or readiness claim is implied.
+The next stages are a verified data-rights contract for the intended use, result-availability timestamps, reproducible dataset-specific evaluation and calibration. The current browser workbench is synthetic. Real upcoming fixtures, validated competition expansion and operational data freshness require separate implementation and validation. No delivery date or readiness claim is implied.
 
 For changes, start with [CONTRIBUTING.md](CONTRIBUTING.md). Handle sensitive reports as described in [SECURITY.md](SECURITY.md). This project has no affiliation with or endorsement from the ATP, WTA, Grand Slam organizers or dataset publishers.

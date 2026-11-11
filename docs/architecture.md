@@ -1,6 +1,16 @@
 # Architecture
 
-The public implementation is a small offline Python module. It has no server, database, background job, authentication, upload flow or provider integration.
+The public implementation has two independent entry points: an offline Python module and a static TypeScript browser application. Neither has a database, background data job, authentication, upload flow or provider integration.
+
+## Browser application
+
+Vite builds `index.html` and `web/` to the ignored `dist/` directory. Four hash-routed destinations (overview, matchup lab, competition directory, method/record) work on ordinary static hosting, including browser back/forward. There is no server route or environment secret.
+
+`web/model.ts` owns original fictional player/rating fixtures, context validation, Elo arithmetic and the competition taxonomy. The lab mirrors `Elo.probability()` and its equal-weight surface blend; it does not fit the Python model or read its private evaluation artifacts. Ratings are illustrative inputs, not fitted estimates. Only Hard, Clay and Grass are exposed in the lab; the offline adapter additionally recognizes Carpet.
+
+The real local Web Worker calculates lab output. Input changes, navigation, cancellation and reset terminate pending work, clear old results and prevent stale messages from restoring them. Worker startup/errors/timeouts have visible states and retry keeps the inputs. Search is treated as text, never rendered into HTML. Input data is not persisted or sent to a service. Browser tests cover the production build at 360, 768 and 1440 CSS pixels, including keyboard and axe checks.
+
+The directory represents tour, Slam, development and other-format categories. All data is currently unavailable. Category navigation is distinct from adapter eligibility, which is distinct from validated competition coverage; none implies a live feed or an exhaustive event catalogue.
 
 ## Included processing
 
@@ -15,4 +25,4 @@ The public implementation is a small offline Python module. It has no server, da
 
 ## External integration boundary
 
-The caller owns the data-rights, provenance and availability contract. A production integration would additionally need timestamped fixtures, verified result completion/publication times, identity mapping, duplicate/correction handling, monitoring and a separately validated user interface. None of those systems is supplied or claimed by this module.
+The caller owns the data-rights, provenance and availability contract. A real-data production integration would additionally need timestamped fixtures, verified result completion/publication times, identity mapping, duplicate/correction handling, monitoring and real-data validation of every displayed claim. None of those systems is supplied or claimed here.
