@@ -10,7 +10,7 @@
     "noUnusedParameters": true,
     "skipLibCheck": true,
     "verbatimModuleSyntax": true,
-    "types": ["vite/client"]
+    "types": ["vite/client", "node"]
   },
-  "include": ["web", "web-tests"]
+  "include": ["web", "web-tests", "browser-tests", "vite.config.ts", "playwright.config.ts"]
 }
