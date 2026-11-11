@@ -6,6 +6,8 @@ A transparent tennis exploration prototype: a responsive browser workbench, an e
 
 **Website:** a production URL has not yet been verified. Run the complete browser app locally with the commands below. A build or CI badge alone is not evidence that a deployed website works.
 
+The [GitHub Pages deployment guide](docs/deployment.md) describes the pending owner setup, check-gated publication and full browser verification against the actual deployed version. No unverified website URL is advertised here.
+
 ## What is included
 
 | Capability | Current scope |
@@ -117,7 +119,8 @@ docs/architecture.md     Included components and integration boundaries
 docs/evaluation.md       Chronology, metrics and evidence limits
 docs/data-policy.md      External-data rights and retrieval requirements
 requirements-dev.txt     Pinned development tools
-.github/workflows/ci.yml Automated Python and full web checks
+.github/workflows/ci.yml Python/web checks, main-only Pages deployment and live QA
+docs/deployment.md      Owner setup, least-privilege publication and live verification
 ```
 
 ## Development priorities

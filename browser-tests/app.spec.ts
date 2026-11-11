@@ -7,7 +7,7 @@ test("overview, navigation, back and truthful method record", async ({ page }) =
   page.on("response", (response) => {
     if (response.status() >= 400) errors.push(response.url());
   });
-  await page.goto("/");
+  await page.goto("./");
   await expect(page.getByRole("heading", { level: 1 })).toContainText("Read the court.");
   await expect(page.locator(".mode")).toContainText("SYNTHETIC DEMO");
   await page.getByRole("link", { name: "Read the method" }).click();
@@ -22,7 +22,7 @@ test("overview, navigation, back and truthful method record", async ({ page }) =
 test("real local worker calculates, changes invalidate, swaps complement, resets", async ({
   page,
 }) => {
-  await page.goto("/#lab");
+  await page.goto("./#lab");
   await expect(page.getByRole("heading", { name: "No calculation yet" })).toBeVisible();
   await page.getByRole("button", { name: "Calculate matchup" }).click();
   await expect(page.locator(".probabilities")).toContainText("62.7");
@@ -42,7 +42,7 @@ test("real local worker calculates, changes invalidate, swaps complement, resets
 });
 
 test("WTA, global-only, input validation and repeat calculations", async ({ page }) => {
-  await page.goto("/#lab");
+  await page.goto("./#lab");
   await page.getByRole("combobox", { name: "Tour", exact: true }).selectOption("WTA");
   await expect(page.getByRole("combobox", { name: "Demo player A", exact: true })).toHaveValue(
     "w1",
@@ -71,7 +71,7 @@ test("WTA, global-only, input validation and repeat calculations", async ({ page
 });
 
 test("coverage filters, empty state, details and safe untrusted query", async ({ page }) => {
-  await page.goto("/#competitions");
+  await page.goto("./#competitions");
   await expect(page.locator("details")).toHaveCount(17);
   await page.getByRole("combobox", { name: "Category", exact: true }).selectOption("Grand Slam");
   await expect(page.locator("details")).toHaveCount(4);
@@ -121,7 +121,7 @@ test("pending work can be canceled and cannot overwrite changed or navigated sta
       }
     };
   });
-  await page.goto("/#lab");
+  await page.goto("./#lab");
   await page.getByRole("button", { name: "Calculate matchup" }).click();
   await expect(page.getByRole("status")).toContainText("Calculating in your browser");
   await page.getByRole("button", { name: "Cancel", exact: true }).click();
@@ -148,7 +148,7 @@ test("local worker failure is visible and reset remains usable", async ({ page }
       }
     } as unknown as typeof Worker;
   });
-  await page.goto("/#lab");
+  await page.goto("./#lab");
   await page.getByRole("button", { name: "Calculate matchup" }).click();
   await expect(page.getByRole("alert")).toContainText("local calculation could not finish");
   await expect(page.getByRole("button", { name: "Calculate matchup" })).toBeEnabled();
@@ -159,7 +159,7 @@ test("local worker failure is visible and reset remains usable", async ({ page }
 });
 
 test("keyboard skip link, complete navigation and focused headings", async ({ page }) => {
-  await page.goto("/");
+  await page.goto("./");
   await page.keyboard.press("Tab");
   await expect(page.getByRole("link", { name: "Skip to content" })).toBeFocused();
   await page.keyboard.press("Enter");
@@ -172,8 +172,16 @@ test("keyboard skip link, complete navigation and focused headings", async ({ pa
 });
 
 for (const route of ["overview", "lab", "competitions", "method"]) {
-  test(`${route} has no axe violations or page overflow`, async ({ page }) => {
-    await page.goto(`/#${route}`);
+  test(`${route} has no axe violations or page overflow`, async ({ page }, testInfo) => {
+    const errors: string[] = [];
+    page.on("pageerror", (error) => errors.push(error.message));
+    page.on("console", (message) => {
+      if (message.type() === "error") errors.push(message.text());
+    });
+    page.on("response", (response) => {
+      if (response.status() >= 400) errors.push(response.url());
+    });
+    await page.goto(`./#${route}`);
     if (route === "lab") {
       await page.getByRole("button", { name: "Calculate matchup" }).click();
       await expect(page.locator(".probabilities")).toBeVisible();
@@ -185,8 +193,21 @@ for (const route of ["overview", "lab", "competitions", "method"]) {
     expect(
       await page.evaluate(() => document.documentElement.scrollWidth <= window.innerWidth),
     ).toBe(true);
+    expect(errors).toEqual([]);
+    await testInfo.attach(`${route}-${testInfo.project.name}`, {
+      body: await page.screenshot({ fullPage: true }),
+      contentType: "image/png",
+    });
   });
 }
+
+test("built source fingerprint identifies the tested version", async ({ page }) => {
+  await page.goto("./");
+  const footer = page.getByRole("contentinfo");
+  await expect(footer).toContainText(/Source [a-f0-9]{12}/);
+  const expected = process.env.EXPECTED_SOURCE_VERSION;
+  if (expected) await expect(footer).toContainText(`Source ${expected}`);
+});
 
 for (const failure of ["error", "messageerror", "timeout"] as const) {
   test(`asynchronous worker ${failure} is visible and a repeat calculation recovers`, async ({
@@ -208,7 +229,7 @@ for (const failure of ["error", "messageerror", "timeout"] as const) {
         }
       };
     }, failure);
-    await page.goto("/#lab");
+    await page.goto("./#lab");
     const calculate = page.getByRole("button", { name: "Calculate matchup" });
     await calculate.focus();
     await page.keyboard.press("Enter");
@@ -225,7 +246,7 @@ for (const failure of ["error", "messageerror", "timeout"] as const) {
 test("skip from lab preserves route history, reset and keyboard calculation focus", async ({
   page,
 }) => {
-  await page.goto("/#lab");
+  await page.goto("./#lab");
   await page.keyboard.press("Tab");
   await page.keyboard.press("Enter");
   await expect(page.getByRole("main")).toBeFocused();
