@@ -4,9 +4,9 @@ A transparent tennis exploration prototype: a responsive browser workbench, an e
 
 **Status: early prototype — synthetic demonstrations only.** The browser app and command-line example use original fictional inputs. There is no live fixture feed, real-player forecast, trained real-data model or public benchmark. No live or prospective accuracy is claimed.
 
-**Website:** a production URL has not yet been verified. Run the complete browser app locally with the commands below. A build or CI badge alone is not evidence that a deployed website works.
+**Website:** [Explore Baseline Tennis Predictor](https://roni-altshuler.github.io/tennis_predictor/) — the public, browser-only synthetic demonstration. All players and ratings remain fictional; the website is not a live prediction feed.
 
-The [GitHub Pages deployment guide](docs/deployment.md) describes the pending owner setup, check-gated publication and full browser verification against the actual deployed version. No unverified website URL is advertised here.
+The [GitHub Pages deployment guide](docs/deployment.md) explains owner setup, check-gated publication and browser verification of the actual deployed version. Each main deployment runs the full responsive browser suite against the published URL and checks its source fingerprint.
 
 ## What is included
 
